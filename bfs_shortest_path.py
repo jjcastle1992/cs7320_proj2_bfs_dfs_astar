@@ -38,19 +38,20 @@ def build_graph_as_dict (node_list, directed_graph=False):
 def bfs_shortest_paths(graph, start, goal):
     global bfs_nodes_visited  # to track number nodes visited
 
-    queue = [ (start, [start])]
+    queue = [[start]]
     bfs_nodes_visited = 0
 
     while queue:
-        (vertex, path) = queue.pop(0)
+        path = queue.pop(0)
+        vertex = path[len(path) - 1]
         bfs_nodes_visited += 1
         next_node_list = [x for x in graph[vertex]
                           if x not in set(path)]
         for next in next_node_list:
             if next == goal:
-                return [path + [next]]  # bracket to return List of List
+                return [path + [next]]
             else:
-                queue.append((next, path + [next]))
+                queue.append(path + [next])
 
 
 # main - try with larger graph and measure memory/search - complex graph
@@ -90,11 +91,11 @@ def main():
     goal_node = 10
 
     # get a list of all the paths to goal using BFS
-    bfs_path_list  = list(bfs_shortest_paths(graph, start_node, goal_node))
+    bfs_path_list = list(bfs_shortest_paths(graph, start_node, goal_node))
 
     # display # paths  and the paths
     print (f"BFS shortest path. Number paths={len(bfs_path_list)}/"
-           f"\nBFS paths: {bfs_path_list}"
+           f"\nBFS shortest path: {bfs_path_list}"
            f"\nTotal nodes visited: {bfs_nodes_visited}")
 
 
