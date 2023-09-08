@@ -1,6 +1,6 @@
 # HW2  - Compare BFS DFS search algorithms
-# todo: 0. replace the function build_graph_as_dict with your code from hw2
-# todo: 1. add code to count number of nodes visited for both bfs and dfs
+# todo: 0. replace the function build_graph_as_dict w your code from hw2
+# todo: 1. add code to count number of nodes visited for both bfs & dfs
 #            hint: define global variables and display the result
 # todo: 2. modify bfs to handle iterative deepening
 # todo: 3. Write shortest path functions that return shortest path\
