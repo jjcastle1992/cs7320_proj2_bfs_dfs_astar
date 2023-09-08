@@ -56,9 +56,9 @@ def bfs_all_paths(graph, start, goal):
                           if x not in set(path)]
         for next in next_node_list:
             if next == goal:
-                yield path + [next]
+                return path + [next]
             else:
-                queue.append( (next, path + [next]))
+                queue.append((next, path + [next]))
 
 
 def dfs_all_paths(graph, start, goal, limit):
@@ -133,7 +133,7 @@ def main():
     # results for DFS
     print (f"DFS all paths. Number paths={len(dfs_path_list)}/"
            f"\nDFS paths: {dfs_path_list}"
-           f"\nTotal nodes visited: {bfs_nodes_visited}")
+           f"\nTotal nodes visited: {dfs_nodes_visited}")
 
 # run the main function
 main()
