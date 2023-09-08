@@ -61,7 +61,7 @@ def bfs_all_paths(graph, start, goal):
                 queue.append( (next, path + [next]))
 
 
-def dfs_all_paths(graph, start, goal):
+def dfs_all_paths(graph, start, goal, limit):
     global dfs_nodes_visited  # to track number nodes visited
     stack = [ (start, [start])]
     dfs_nodes_visited = 0
@@ -81,8 +81,6 @@ def dfs_all_paths(graph, start, goal):
 
 # main - try with larger graph and measure memory/search - complex graph
 def main():
-
-
     # small graph - using integers for node labels
     node_list_1 = [(0, 1), (1, 2), (2, 3), (3, 4), (4, 5), (5, 6),
                    (6, 7), (7, 8), (8, 9), (9, 10)]
@@ -110,7 +108,7 @@ def main():
                    (10, 667), (10, 668), (668, 669), (666, 668)]
 
     # create your graph data structure from the node_list
-    graph = build_graph_as_dict(node_list_1, directed_graph=False)
+    graph = build_graph_as_dict(node_list_2, directed_graph=False)
 
     # Here we are using nodes labeled with integers (0,1,2,...)
     print ("\nBreadth First Search-----------")
@@ -128,10 +126,9 @@ def main():
 
     print("\n\nDepth First Search--------------")
 
-    # get a list of all the paths to goal using DFS
-    # you need to modify the function to do interative deepening
-    # Can you reduce the # of nodes explored by setting a deep level?
-    dfs_path_list = list(dfs_all_paths(graph, start_node, goal_node))
+    for depth in range (10):
+        # get a list of all the paths to goal using DFS iterative deepening
+        dfs_path_list = list(dfs_all_paths(graph, start_node, goal_node, depth))
 
     # results for DFS
     print (f"DFS all paths. Number paths={len(dfs_path_list)}/"
