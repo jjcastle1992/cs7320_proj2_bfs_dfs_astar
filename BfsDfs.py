@@ -40,7 +40,7 @@ def build_graph_as_dict (node_list, directed_graph=False):
                 graph[node2].append(node1)
             else:
                 graph[node2] = [node1]
-
+    print(f'Size of Graph: {len(graph.keys())}')
     return graph
 
 def bfs_all_paths(graph, start, goal):
@@ -110,7 +110,7 @@ def main():
                    (10, 667), (10, 668), (668, 669), (666, 668)]
 
     # create your graph data structure from the node_list
-    graph = build_graph_as_dict(node_list_2, directed_graph=False)
+    graph = build_graph_as_dict(node_list_1, directed_graph=False)
 
     # Here we are using nodes labeled with integers (0,1,2,...)
     print ("\nBreadth First Search-----------")
