@@ -133,9 +133,10 @@ def main():
     dfs_path_list = []
     depth = 0
 
-    while len(dfs_path_list) == 0:
-        # get a list of all the paths to goal using DFS iterative deepening
-        dfs_path_list = list(dfs_all_paths(graph, start_node, goal_node, depth))
+    while (len(dfs_path_list) == 0) and (depth < 20):
+        # get a list of all the paths to goal w/ DFS iterative deepening
+        dfs_path_list = list(dfs_all_paths(graph, start_node, goal_node,
+                                           depth))
         depth += 1
 
     # results for DFS
