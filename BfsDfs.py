@@ -43,6 +43,7 @@ def build_graph_as_dict (node_list, directed_graph=False):
     print(f'Size of Graph: {len(graph.keys())}')
     return graph
 
+
 def bfs_all_paths(graph, start, goal):
     global bfs_nodes_visited  # to track number nodes visited
 
@@ -56,7 +57,7 @@ def bfs_all_paths(graph, start, goal):
                           if x not in set(path)]
         for next in next_node_list:
             if next == goal:
-                return path + [next]
+                return [path + [next]]  # bracket to return List of List
             else:
                 queue.append((next, path + [next]))
 
@@ -69,6 +70,10 @@ def dfs_all_paths(graph, start, goal, limit):
     while stack:
         # note pop()  returns LAST value in list
         (vertex, path) = stack.pop()
+
+        if len(path) > limit:
+            continue
+
         dfs_nodes_visited += 1
         next_node_list = [x for x in graph[vertex]
                           if x not in set(path)]
@@ -76,7 +81,7 @@ def dfs_all_paths(graph, start, goal, limit):
             if next == goal:
                 yield path + [next]
             else:
-                stack.append( (next, path + [next]))
+                stack.append((next, path + [next]))
 
 
 # main - try with larger graph and measure memory/search - complex graph
@@ -125,10 +130,13 @@ def main():
 
 
     print("\n\nDepth First Search--------------")
+    dfs_path_list = []
+    depth = 0
 
-    for depth in range (10):
+    while len(dfs_path_list) == 0:
         # get a list of all the paths to goal using DFS iterative deepening
         dfs_path_list = list(dfs_all_paths(graph, start_node, goal_node, depth))
+        depth += 1
 
     # results for DFS
     print (f"DFS all paths. Number paths={len(dfs_path_list)}/"
