@@ -9,7 +9,7 @@ class Test(TestCase):
     def test_build_directed_graph_as_dict(self):
         node_list = [('A', 'B'), ('B', 'C'), ('C', 'D'), ('C', 'E'), ('A', 'E'), ('B', 'F')]
 
-        graph_dict = build_graph_as_dict(node_list, isDirectedGraph=True)
+        graph_dict = build_graph_as_dict(node_list, directed_graph=True)
 
         # test that a key exists for each of the first nodes in node_list tuples (from->to)
         assert ('A' in graph_dict.keys()) == True
