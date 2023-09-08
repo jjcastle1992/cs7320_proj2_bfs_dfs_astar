@@ -5,7 +5,8 @@
 # todo: 2. modify bfs to handle iterative deepening
 # todo: 3. Write shortest path functions that return shortest path\
 #          using BFS and DFS with iterative deepening
-#
+
+
 
 
 def build_graph_as_dict (node_list, directed_graph=False):
@@ -43,10 +44,14 @@ def build_graph_as_dict (node_list, directed_graph=False):
     return graph
 
 def bfs_all_paths(graph, start, goal):
+    global bfs_nodes_visited  # to track number nodes visited
+
     queue = [ (start, [start])]
+    bfs_nodes_visited = 0
 
     while queue:
         (vertex, path) = queue.pop(0)
+        bfs_nodes_visited += 1
         next_node_list = [x for x in graph[vertex]
                           if x not in set(path)]
         for next in next_node_list:
@@ -57,11 +62,14 @@ def bfs_all_paths(graph, start, goal):
 
 
 def dfs_all_paths(graph, start, goal):
+    global dfs_nodes_visited  # to track number nodes visited
     stack = [ (start, [start])]
+    dfs_nodes_visited = 0
 
     while stack:
         # note pop()  returns LAST value in list
         (vertex, path) = stack.pop()
+        dfs_nodes_visited += 1
         next_node_list = [x for x in graph[vertex]
                           if x not in set(path)]
         for next in next_node_list:
@@ -73,6 +81,8 @@ def dfs_all_paths(graph, start, goal):
 
 # main - try with larger graph and measure memory/search - complex graph
 def main():
+
+
     # small graph - using integers for node labels
     node_list_1 = [(0, 1), (1, 2), (2, 3), (3, 4), (4, 5), (5, 6),
                    (6, 7), (7, 8), (8, 9), (9, 10)]
@@ -112,7 +122,8 @@ def main():
 
     # display # paths  and the paths
     print (f"BFS all paths. Number paths={len(bfs_path_list)}/"
-           f"\nBFS paths: {bfs_path_list}")
+           f"\nBFS paths: {bfs_path_list}"
+           f"\nTotal nodes visited: {bfs_nodes_visited}")
 
 
     print("\n\nDepth First Search--------------")
@@ -124,7 +135,8 @@ def main():
 
     # results for DFS
     print (f"DFS all paths. Number paths={len(dfs_path_list)}/"
-           f"\nDFS paths: {dfs_path_list}")
+           f"\nDFS paths: {dfs_path_list}"
+           f"\nTotal nodes visited: {bfs_nodes_visited}")
 
 # run the main function
 main()
