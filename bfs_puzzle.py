@@ -1,3 +1,5 @@
+import copy
+
 
 def get_child_boards_list(board):
     """
@@ -8,29 +10,76 @@ def get_child_boards_list(board):
     :return: A list of ALL possible child and subchild boards
     """
 
+    list_of_child_boards = []
     # determine board size
-    row_count = 0
-    max_col = 0
+    total_board_rows = 0
+    total_board_cols = 0
     for rows in board:
-        row_count += 1
+        total_board_rows += 1
         col_count = 0
         for columns in board:
             col_count += 1
-            if (col_count > max_col):
-                max_col = col_count
+            if (col_count > total_board_cols):
+                total_board_cols = col_count
 
-    print (f'board size {row_count} x {max_col}')
-    # find position of the zero (empty space)
+    print (f'board size {total_board_rows} x {total_board_cols}')
+    zero_position = [-1, -1]
+    row_pos = -1  # to determine which
 
-    # determine if we can move up
+    for rows in board:
+        row_pos += 1
+        col_pos = -1
+        for columns in rows:
+            col_pos += 1
+            if columns == 0:
+                zero_position = [row_pos, col_pos]
 
-    # determine if we can move down
+    print(f'Zero Position is: {zero_position}')
+
+    # RxC matrix (where R = Num Rows and C = Num Columns
+
+
+    # determine if we can move up (zero position (i, j) where i < R-1
+    print(f'Clean Board: {board}')
+    up_board = copy.deepcopy(board)
+
+    if (zero_position[0] < (total_board_rows - 1)):
+        swap_piece = up_board[zero_position[0] + 1][zero_position[1]]
+        print(swap_piece)
+        # swap zero
+        up_board[zero_position[0] + 1][zero_position[1]] \
+            = up_board[zero_position[0]][zero_position[1]]
+
+        # swap swap_piece
+        up_board[zero_position[0]][zero_position[1]] = swap_piece
+        print(f'Upboard{up_board}')
+
+        # add up_board to the list of children
+        list_of_child_boards.append(up_board)
+
+    # determine if we can move down (zero position (i, j) where i < R+1
+    print(f'Clean Board: {board}')
+    down_board = copy.deepcopy(board)
+
+    if (zero_position[0] < (total_board_rows + 1)):
+        swap_piece = down_board[zero_position[0] - 1][zero_position[1]]
+        print(swap_piece)
+        # swap zero
+        down_board[zero_position[0] - 1][zero_position[1]] \
+            = down_board[zero_position[0]][zero_position[1]]
+
+        # swap swap_piece
+        down_board[zero_position[0]][zero_position[1]] = swap_piece
+        print(f'Downboard{down_board}')
+
+        # add up_board to the list of children
+        list_of_child_boards.append(down_board)
 
     # determine if we can move left
 
     # determine if we can move right
 
-    # return list_of_child_boards
+    return list_of_child_boards
 
 
 
