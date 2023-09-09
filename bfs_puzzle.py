@@ -124,30 +124,42 @@ def bfs_shortest_paths(graph, start, goal):
         path = queue.pop(0)
         vertex = path[-1]
         bfs_nodes_visited += 1
-        next_node_list = [x for x in graph[vertex]
-                          if x not in set(path)]
+        # next_node_list = [x for x in graph[vertex]
+        #                   if x not in set(path)]
         for next in next_node_list:
             if next == goal:
                 return [path + [next]]
             else:
                 queue.append(path + [next])
 
+    return None  # No shortest path was found
 
 def bfs2(start_board, goal_board):
 
     # Verify legal start board (square matrix)
 
     # get start board child boards
-    get_child_boards_list(start_board)
+    all_child_boards = get_child_boards_list(start_board)
 
     # check for the shortest path
+    shortest_path = bfs_shortest_paths(all_child_boards, start_board,
+                                       goal_board)
 
+    return shortest_path
 
 def main():
     start_state = [[4, 1, 3], [2, 0, 6], [7, 5, 8]]
-    all_child_boards = get_child_boards_list(start_state)
+    goal_state = [[1, 2, 3],[4, 5, 6],[7, 8, 0]]  # my assumed goal
+    f1 = [[4, 0, 3], [2, 1, 6], [7, 5, 8]]
+    shortest_path = bfs2(start_state, goal_state)
 
-    # bfs_shortest_paths(all_child_boards)
+    if (shortest_path != None):
+        print(f'Shortest Path: {shortest_path}')
+    else:
+        print('Shortest path note found')
+
+
+    # bfs_shortest_paths(all_child_boards, start_state, goal_state)
 
 
 main()
