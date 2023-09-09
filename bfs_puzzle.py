@@ -10,7 +10,8 @@ def get_child_boards_list(board):
     :return: A list of ALL possible child and subchild boards
     """
 
-    list_of_child_boards = []
+    list_of_child_boards = {}
+
     # determine board size
     total_board_rows = 0
     total_board_cols = 0
@@ -57,7 +58,10 @@ def get_child_boards_list(board):
         print(f'Upboard{up_board}')
 
         # add up_board to the list of children
-        list_of_child_boards.append(up_board)
+        if str(board) in list_of_child_boards.keys():
+            list_of_child_boards[str(board)].append(up_board)
+        else:
+            list_of_child_boards[str(board)] = [up_board]
 
     # determine if we can move down (zero position (i, j) where i > 0
     down_board = copy.deepcopy(board)
@@ -73,8 +77,11 @@ def get_child_boards_list(board):
         down_board[zero_position[0]][zero_position[1]] = swap_piece
         print(f'Downboard{down_board}')
 
-        # add up_board to the list of children
-        list_of_child_boards.append(down_board)
+        # add down_board to the list of children
+        if str(board) in list_of_child_boards.keys():
+            list_of_child_boards[str(board)].append(down_board)
+        else:
+            list_of_child_boards[str(board)] = [down_board]
 
     # determine if we can move left (zero position (i, j) where j < C-1
     left_board = copy.deepcopy(board)
@@ -90,8 +97,11 @@ def get_child_boards_list(board):
         left_board[zero_position[0]][zero_position[1]] = swap_piece
         print(f'Left_board{left_board}')
 
-        # add up_board to the list of children
-        list_of_child_boards.append(left_board)
+        # add left_board to the list of children
+        if str(board) in list_of_child_boards.keys():
+            list_of_child_boards[str(board)].append(left_board)
+        else:
+            list_of_child_boards[str(board)] = [left_board]
 
     # determine if we can move right (zero position (i, j) where j > 0
     right_board = copy.deepcopy(board)
@@ -107,8 +117,12 @@ def get_child_boards_list(board):
         right_board[zero_position[0]][zero_position[1]] = swap_piece
         print(f'Right_board{right_board}')
 
-        # add up_board to the list of children
-        list_of_child_boards.append(right_board)
+        # add right_board to the list of children
+        if str(board) in list_of_child_boards.keys():
+            list_of_child_boards[str(board)].append(right_board)
+        else:
+            list_of_child_boards[str(board)] = [right_board]
+
     return list_of_child_boards
 
 
@@ -120,13 +134,16 @@ def bfs_shortest_paths(graph, start, goal):
     queue = [[start]]
     bfs_nodes_visited = 0
 
+   # NEED TO FIGURE OUT HOW TO COMPARE KEYS IN DICT to pull out next
+    # board
+
     while queue:
         path = queue.pop(0)
         vertex = path[-1]
         bfs_nodes_visited += 1
-        # next_node_list = [x for x in graph[vertex]
-        #                   if x not in set(path)]
-        for next in next_node_list:
+        next_board_list = [x for x in graph[str(vertex)]
+                           if x not in set(str(path))]
+        for next in next_board_list:
             if next == goal:
                 return [path + [next]]
             else:
