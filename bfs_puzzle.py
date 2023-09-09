@@ -75,7 +75,23 @@ def get_child_boards_list(board):
         # add up_board to the list of children
         list_of_child_boards.append(down_board)
 
-    # determine if we can move left
+    # determine if we can move left (zero position (i, j) where j < C-1
+    print(f'Clean Board: {board}')
+    left_board = copy.deepcopy(board)
+
+    if (zero_position[1] < (total_board_cols - 1)):
+        swap_piece = left_board[zero_position[0]][zero_position[1] + 1]
+        print(swap_piece)
+        # swap zero
+        left_board[zero_position[0]][zero_position[1] + 1] \
+            = left_board[zero_position[0]][zero_position[1]]
+
+        # swap swap_piece
+        left_board[zero_position[0]][zero_position[1]] = swap_piece
+        print(f'Left_board{left_board}')
+
+        # add up_board to the list of children
+        list_of_child_boards.append(up_board)
 
     # determine if we can move right
 
