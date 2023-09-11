@@ -56,7 +56,7 @@ def legal_board_check(board):
     for rows in board:
         total_board_rows += 1
         col_count = 0
-        for columns in board:
+        for columns in rows:
             col_count += 1
             if (type(columns) != int):
                 list_ints = False
@@ -197,7 +197,7 @@ def bfs_shortest_paths(start_board, goal_board):
 
     # Verify legality of start board
     legal_board = legal_board_check(start_board)
-    
+
     if (legal_board):
         queue = [[start_board]]
         bfs_level = 0
