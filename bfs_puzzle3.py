@@ -33,6 +33,59 @@ Components:
             2. open_boards is empty (no legal child boards left)
 
 """
+def legal_board_check(board):
+    """
+    This function checks to ensure the starting board is legal
+    :param board: a 2d list of ints that should contain unique numbers
+    and 1 zero
+    :return: Boolean. True if all board conditions are met
+       1. (N x N board dims)
+       2. List values are  ints
+       3. There is exactly 1 zero
+    """
+    square_matrix = False
+    list_ints = True
+    single_zero = False
+    legal_board = False
+
+    # determine board size and check number of zeroes on board
+    total_board_rows = 0
+    total_board_cols = 0
+    zero_count = 0
+
+    for rows in board:
+        total_board_rows += 1
+        col_count = 0
+        for columns in board:
+            col_count += 1
+            if (type(columns) != int):
+                list_ints = False
+            if (columns == 0):
+                zero_count += 1
+            if (col_count > total_board_cols):
+                total_board_cols = col_count
+
+    print (f'board size {total_board_rows} x {total_board_cols}')
+    # Sqauare Matrix Validation
+    if (total_board_cols == total_board_rows):
+        square_matrix = True
+    else:
+        print('ERROR: Board size is not a square matrix!')
+
+    # Single Zero validation
+    if (zero_count == 1):
+        single_zero = True
+    else:
+        print('ERROR: There is more than one zero on the board')
+        print(f'Number Zeroes: {zero_count}')
+
+    if ((square_matrix) and (list_ints) and (single_zero)):
+        legal_board = True
+
+    return legal_board
+
+
+
 def get_child_boards_list(board):
     """
     This function gets ALL child boards for a given parent board
@@ -42,18 +95,6 @@ def get_child_boards_list(board):
 
     list_of_child_boards = []
 
-    # determine board size
-    total_board_rows = 0
-    total_board_cols = 0
-    for rows in board:
-        total_board_rows += 1
-        col_count = 0
-        for columns in board:
-            col_count += 1
-            if (col_count > total_board_cols):
-                total_board_cols = col_count
-
-    # print (f'board size {total_board_rows} x {total_board_cols}')
     zero_position = [-1, -1]
     row_pos = -1  # to determine which
 
@@ -64,6 +105,7 @@ def get_child_boards_list(board):
             col_pos += 1
             if columns == 0:
                 zero_position = [row_pos, col_pos]
+                break
 
     # determine if we can move up (Zero not in bottom Row)
     # print(f'This Level Start Board: {board}')
@@ -152,38 +194,43 @@ def bfs_shortest_paths(start_board, goal_board):
     bfs_nodes_visited = 0  # to track number nodes visited
     explored_boards = []  # note: should explore other ds for find speed
     open_boards = []
-    queue = [[start_board]]
-    bfs_level = 0
 
-    while queue:
-        path = queue.pop(0)
-        current_board = path[-1]
-        bfs_nodes_visited += 1
-        shortest_path = None
+    # Verify legality of start board
+    legal_board = legal_board_check(start_board)
+    
+    if (legal_board):
+        queue = [[start_board]]
+        bfs_level = 0
 
-        print(f'**Current Board{bfs_level}**')
-        matrix_printer([current_board])
+        while queue:
+            path = queue.pop(0)
+            current_board = path[-1]
+            bfs_nodes_visited += 1
+            shortest_path = None
 
-        # 1. Check to see if the vertex is your goal state
-        if (current_board == goal_board):
-            shortest_path = current_board
+            print(f'**Current Board at Level: {bfs_level}**')
+            matrix_printer([current_board])
 
-        else:
-            # generate the children of the vertex.
-            explored_boards.append(current_board)
-            [child_boards] = get_child_boards_list(current_board)
-            bfs_level += 1
-            num_unique_children = 0
+            # 1. Check to see if the vertex is your goal state
+            if (current_board == goal_board):
+                shortest_path = current_board
 
-            # check for duplicates, only add uniques to the open board
-            for child in child_boards:
-                if ((child not in queue) and
-                        (child not in explored_boards)):
-                    open_boards.append(child)
-                    num_unique_children += 1
+            else:
+                # generate the children of the vertex.
+                explored_boards.append(current_board)
+                child_boards = get_child_boards_list(current_board)
+                bfs_level += 1
+                num_unique_children = 0
 
-            # add path + open boards (children) to queue
-            queue.append(path + open_boards)
+                # check for duplicates, only add uniques to the open board
+                for child in child_boards:
+                    if ((child not in queue) and
+                            (child not in explored_boards)):
+                        open_boards.append(child)
+                        num_unique_children += 1
+
+                # add path + open boards (children) to queue
+                queue.append(path + open_boards)
 
     return shortest_path, bfs_nodes_visited  # No shortest path was found
 
