@@ -1,0 +1,230 @@
+# Name: James Castle
+# CS 7320
+# Description: Toy all in one Python file to solve an n-Puzzle
+# Date: Sep 11, 2023
+
+import copy
+
+"""
+Components:
+1. bfs_shortest_path(start/current_board, goal)
+2. get_child_board_list(board)
+    Sequence:
+        1. Set current_board = start_board
+        2. (in final ver). *** WAIT for NOW***
+            1. Check for legal start board - (n x n w/ int
+            values [0: n-1] only.
+            2. Check for legal goal board (n x n w/ int values [0:n-1]
+            where each pair satisfies the equality n < n+1
+        3. Append current_board to open_boards
+        4. Generate first level of child nodes
+            1. call get_child_boards(current_board)
+            2. capture children in a variable 'child_boards'
+        3. Add child_boards to open_boards list:
+            1. Check that child_boards does not contain any boards
+            in explored_boards list.
+            2. If not in explored_boards, add child_boards to
+            open_boards
+        4. While open_list is not empty & shortest_path_found is None:
+            1. call bfs_shortest_path(open_boards, current_board, goal)
+
+        TERMINAL STATE:
+            1. shortest_path found
+            2. open_boards is empty (no legal child boards left)
+
+"""
+def get_child_boards_list(board):
+    """
+    This function gets ALL child boards for a given parent board
+    :param board: 2d list of ints - A game board (RxC) matrix
+    :return: A list of ALL possible child boards of the parent
+    """
+
+    list_of_child_boards = []
+
+    # determine board size
+    total_board_rows = 0
+    total_board_cols = 0
+    for rows in board:
+        total_board_rows += 1
+        col_count = 0
+        for columns in board:
+            col_count += 1
+            if (col_count > total_board_cols):
+                total_board_cols = col_count
+
+    # print (f'board size {total_board_rows} x {total_board_cols}')
+    zero_position = [-1, -1]
+    row_pos = -1  # to determine which
+
+    for rows in board:
+        row_pos += 1
+        col_pos = -1
+        for columns in rows:
+            col_pos += 1
+            if columns == 0:
+                zero_position = [row_pos, col_pos]
+
+    # determine if we can move up (Zero not in bottom Row)
+    # print(f'This Level Start Board: {board}')
+    up_board = copy.deepcopy(board)
+    # print('\nBEGIN POSSIBLE MOVES: ')
+
+    if (zero_position[0] != (total_board_rows - 1)):
+        swap_piece = up_board[zero_position[0] + 1][zero_position[1]]
+        # print(f'Swap Up: {swap_piece}')
+        # swap zero
+        up_board[zero_position[0] + 1][zero_position[1]] \
+            = up_board[zero_position[0]][zero_position[1]]
+
+        # swap swap_piece
+        up_board[zero_position[0]][zero_position[1]] = swap_piece
+        # print(f'Upboard{up_board}')
+
+        # add up_board to the list of children
+        list_of_child_boards.append(up_board)
+
+
+    # determine if we can move down (Zero not in top row)
+    down_board = copy.deepcopy(board)
+
+    if (zero_position[0] != 0):
+        swap_piece = down_board[zero_position[0] - 1][zero_position[1]]
+        # print(f'Swap Down: {swap_piece}')
+        # swap zero
+        down_board[zero_position[0] - 1][zero_position[1]] \
+            = down_board[zero_position[0]][zero_position[1]]
+
+        # swap swap_piece
+        down_board[zero_position[0]][zero_position[1]] = swap_piece
+        # print(f'Downboard{down_board}')
+
+        # add down_board to the list of children
+        list_of_child_boards.append(down_board)
+
+    # determine if we can move left (Zero cannot be in last column)
+    left_board = copy.deepcopy(board)
+
+    if (zero_position[1] != (total_board_cols - 1)):
+        swap_piece = left_board[zero_position[0]][zero_position[1] + 1]
+        # print(f'Swap Left: {swap_piece}')
+        # swap zero
+        left_board[zero_position[0]][zero_position[1] + 1] \
+            = left_board[zero_position[0]][zero_position[1]]
+
+        # swap swap_piece
+        left_board[zero_position[0]][zero_position[1]] = swap_piece
+        # print(f'Left_board{left_board}')
+
+        # add left_board to the list of children
+        list_of_child_boards.append(left_board)
+
+    # determine if we can move right (Zero cannot be in first column)
+    right_board = copy.deepcopy(board)
+
+    if (zero_position[1] != 0):
+        swap_piece = right_board[zero_position[0]][zero_position[1] - 1]
+        # print(f'Swap Right: {swap_piece}')
+        # swap zero
+        right_board[zero_position[0]][zero_position[1] - 1] \
+            = right_board[zero_position[0]][zero_position[1]]
+
+        # swap swap_piece
+        right_board[zero_position[0]][zero_position[1]] = swap_piece
+        # print(f'Right_board{right_board}')
+
+        # add right_board to the list of children
+        list_of_child_boards.append(right_board)
+
+    return list_of_child_boards
+
+
+def bfs_shortest_paths(start_board, goal_board):
+    """
+    This function searches for the shortest path to a game state board
+    if one exists.
+    :param start: a 2d list of ints containing the starting game board
+    :param goal: a 2d list of ints containing the goal state game board
+    :return: a 2d list of ints containing the shortest path if one
+    exists. If there is no path to the goal state, None is returned.
+    Also returns an int count of the number of nodes visited.
+    """
+    bfs_nodes_visited = 0  # to track number nodes visited
+    explored_boards = []  # note: should explore other ds for find speed
+    open_boards = []
+    queue = [[start_board]]
+    bfs_level = 0
+
+    while queue:
+        path = queue.pop(0)
+        current_board = path[-1]
+        bfs_nodes_visited += 1
+        shortest_path = None
+
+        print(f'**Current Board{bfs_level}**')
+        matrix_printer([current_board])
+
+        # 1. Check to see if the vertex is your goal state
+        if (current_board == goal_board):
+            shortest_path = current_board
+
+        else:
+            # generate the children of the vertex.
+            explored_boards.append(current_board)
+            [child_boards] = get_child_boards_list(current_board)
+            bfs_level += 1
+            num_unique_children = 0
+
+            # check for duplicates, only add uniques to the open board
+            for child in child_boards:
+                if ((child not in queue) and
+                        (child not in explored_boards)):
+                    open_boards.append(child)
+                    num_unique_children += 1
+
+            # add path + open boards (children) to queue
+            queue.append(path + open_boards)
+
+    return None, bfs_nodes_visited  # No shortest path was found
+
+
+def matrix_printer(matrix, start_index=0, shortest_path = False):
+    """
+    BUG IN HERE RE SHORTEST PATH PRINT
+    :param matrix:
+    :param start_index:
+    :param shortest_path:
+    :return:
+    """
+    index = 0
+
+    for boards in matrix:
+        if (index >= start_index):
+            for item in boards:
+                print(item)
+            print(10 * '-')
+            if(shortest_path):
+                print('V')
+        index += 1
+
+def main():
+
+    # 3 Puzzle Driver
+    start_state = [[1, 0], [3, 2]]
+    goal_state = [[1, 2], [3, 0]]
+
+    # 8 Puzzle Driver
+    # start_state = [[4, 1, 3], [2, 0, 6], [7, 5, 8]]
+    # start_state = [[1, 2, 3], [4, 0, 6], [7, 5, 8]]
+    # goal_state = [[1, 2, 3], [4, 5, 6], [7, 8, 0]]  # my assumed goal
+
+    shortest_path, bfs_nodes_visited = bfs_shortest_paths(start_state, goal_state)
+    print(f'Total Nodes Explored: {bfs_nodes_visited}')
+    if (shortest_path != None):
+        print(f'Shortest Path')
+        matrix_printer(shortest_path, 0, True)
+    else:
+        print('Shortest path not found')
+
+
+main()
