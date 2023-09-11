@@ -222,6 +222,11 @@ def bfs2(start_board, goal_board):
         shortest_path = bfs_shortest_paths(open_boards, current_board,
                                            goal_board)
 
+        if (shortest_path == None):
+            while(open_boards):
+                explored_boards.append(open_boards[0])
+                open_boards.pop(0)
+                
     #     TERMINAL STATE:
     #         1. shortest_path found
     #         2. open_boards is empty (no legal child boards left)
@@ -230,9 +235,9 @@ def bfs2(start_board, goal_board):
     return shortest_path
 
 def main():
-    start_state = [[4, 1, 3], [2, 0, 6], [7, 5, 8]]
-    goal_state = [[1, 2, 3],[4, 5, 6],[7, 8, 0]]  # my assumed goal
-    f1 = [[4, 0, 3], [2, 1, 6], [7, 5, 8]]
+    # start_state = [[4, 1, 3], [2, 0, 6], [7, 5, 8]]
+    start_state = [[1, 2, 3], [4, 5, 6], [7, 0, 8]]
+    goal_state = [[1, 2, 3], [4, 5, 6], [7, 8, 0]]  # my assumed goal
     shortest_path = bfs2(start_state, goal_state)
 
     if (shortest_path != None):
