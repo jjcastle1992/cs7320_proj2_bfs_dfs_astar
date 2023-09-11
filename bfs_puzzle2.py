@@ -157,8 +157,6 @@ def get_child_boards_list(board):
     return list_of_child_boards
 
 
-
-
 def bfs_shortest_paths(graph, start, goal):
     global bfs_nodes_visited  # to track number nodes visited
 
@@ -183,7 +181,53 @@ def bfs_shortest_paths(graph, start, goal):
     return None  # No shortest path was found
 
 def bfs2(start_board, goal_board):
-    pass
+    """
+    This function drives the n-puzzle solver.
+    :param start_board: 2d list that represents the start state
+    :param goal_board:  2d list that represents the goal state
+    :return: list of the shortest path
+    """
+    current_board = []
+    explored_boards = []  # note: should explore other ds for find speed
+    open_boards = []
+    shortest_path = None
+    # Sequence:
+    #     1. Set current_board = start_board
+    #     2. (in final ver). *** WAIT for NOW***
+    #         1. Check for legal start board - (n x n w/ int
+    #         values [0: n-1] only.
+    #         2. Check for legal goal board (n x n w/ int values [0:n-1]
+    #         where each pair satisfies the equality n < n+1
+    #     3. Append current_board to open_boards
+    #     4. Generate first level of child nodes
+    #         1. call get_child_boards(current_board)
+    #         2. capture children in a variable 'child_boards'
+    #     3. Add child_boards to open_boards list:
+    #         1. Check that child_boards does not contain any boards
+    #         in explored_boards list.
+    #         2. If not in explored_boards, add child_boards to
+    #         open_boards
+    #     4. While open_list is not empty & shortest_path_found is None:
+    #         1. call bfs_shortest_path(open_boards, current_board, goal)
+
+    current_board = start_board
+    open_boards.append(current_board)
+    while (open_boards and (shortest_path == None)):
+        child_boards = get_child_boards_list(current_board)
+
+        for child in child_boards:
+            if ((child not in open_boards) and (child not in explored_boards)):
+                open_boards.append(child)
+
+        shortest_path = bfs_shortest_paths(open_boards, current_board,
+                                           goal_board)
+
+    #     TERMINAL STATE:
+    #         1. shortest_path found
+    #         2. open_boards is empty (no legal child boards left)
+
+
+    return shortest_path
 
 def main():
     start_state = [[4, 1, 3], [2, 0, 6], [7, 5, 8]]
@@ -194,7 +238,7 @@ def main():
     if (shortest_path != None):
         print(f'Shortest Path: {shortest_path}')
     else:
-        print('Shortest path note found')
+        print('Shortest path not found')
 
 
 main()
