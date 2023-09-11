@@ -185,7 +185,7 @@ def bfs_shortest_paths(start_board, goal_board):
             # add path + open boards (children) to queue
             queue.append(path + open_boards)
 
-    return None, bfs_nodes_visited  # No shortest path was found
+    return shortest_path, bfs_nodes_visited  # No shortest path was found
 
 
 def matrix_printer(matrix, start_index=0, shortest_path = False):
