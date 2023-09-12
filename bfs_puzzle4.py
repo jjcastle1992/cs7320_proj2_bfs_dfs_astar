@@ -5,7 +5,7 @@
 
 import time
 import copy
-
+from queue import PriorityQueue
 
 def legal_board_check(board):
     """
@@ -192,6 +192,74 @@ def bfs_shortest_paths(start_board, goal_board):
                     queue.append(path + [next])
     return None  # if no path is found
 
+
+def bfs2_euclidean(start_board, goal_board):
+    """
+    This function searches for the shortest path to a game state board
+    if one exists using Euclidean distance heuristics
+    :param start_board: 2d list of ints containing starting game board
+    :param goal_board: 2d list of ints containing goal state game board
+    :return: 2d list of ints containing the shortest path if one
+    exists. If there is no path to the goal state, None is returned.
+    Also returns an int count of the number of nodes visited.
+    """
+    global bfs_nodes_visited  # to track number nodes visited
+    bfs_nodes_visited = 0
+    next_node_list_euclid = PriorityQueue()
+    # Verify legality of start board
+    legal_board = legal_board_check(start_board)
+
+    if (legal_board):
+        queue = [[start_board]]
+
+        while queue:
+            path = queue.pop(0)
+            vertex = path[len(path) - 1]
+            print(f'**Current Board #{bfs_nodes_visited}**')
+            matrix_printer([vertex])
+            bfs_nodes_visited += 1
+            child_boards = get_child_boards_list(vertex)
+            next_node_list = [x for x in child_boards[str(vertex)]
+                              if str(x) not in set(str(path))]
+
+            # UPDATE SO NEXT_NODE_LIST IS PRIORITY QUEUE
+            # (use next_node_list_euclid)
+
+            for next in next_node_list:
+                if next == goal_board:
+                    return [path + [next]]
+                else:
+                    queue.append(path + [next])
+    return None  # if no path is found
+
+
+def euclidean_distance(board, goal):
+    """
+    This function calculates the Euclidean Sum for a given board based
+    on the variance in tile distance of the current board vs the goal
+    board.
+    :param board: 2d list of ints containing the board to give a
+    Euclidean sum.
+    :param goal: 2d list of ints containing goal state game board
+    :return:
+    """
+    euclidean_sum = 0
+    # customizing in-case goal board is not 1, 2, 3, 4...etc.
+    current_target = None
+
+    for row in goal:
+        for col in row:
+            current_target = goal[row][col]
+            board_coord, goal_coord = coordinate_finder(current_target)
+            x1, y1 = board_coord
+            x2, y2 = goal_coord
+            euclidean_dist = (((x2 - x1) ** 2)+((y2 - y1) ** 2)) ** 0.5
+            euclidean_sum += euclidean_dist
+
+    return euclidean_sum
+
+
+def coordinate_finder():
 
 def matrix_printer(matrix, start_index=0, shortest_path=False):
     """
