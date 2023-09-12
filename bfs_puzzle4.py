@@ -241,16 +241,17 @@ def euclidean_distance(board, goal):
     :param board: 2d list of ints containing the board to give a
     Euclidean sum.
     :param goal: 2d list of ints containing goal state game board
-    :return:
+    :return: float that is the sum of all Euclidean distances for the
+    target board vs goal board
     """
-    euclidean_sum = 0
+    euclidean_sum = 0.0
     # customizing in-case goal board is not 1, 2, 3, 4...etc.
     current_target = None
 
-    for row in goal:
-        for col in row:
-            current_target = goal[row][col]
-            board_coord, goal_coord = coordinate_finder(current_target)
+    for row_idx, row in enumerate(goal):
+        for col_idx, element in enumerate(row):
+            current_target = goal[row_idx][col_idx]
+            board_coord, goal_coord = coordinate_finder(current_target, board, goal)
             x1, y1 = board_coord
             x2, y2 = goal_coord
             euclidean_dist = (((x2 - x1) ** 2)+((y2 - y1) ** 2)) ** 0.5
@@ -259,7 +260,39 @@ def euclidean_distance(board, goal):
     return euclidean_sum
 
 
-def coordinate_finder():
+def coordinate_finder(target_val, current_board, goal_board):
+    """
+    Finds coordinates of a target value (int) in 2 boards:
+        1. Current Board
+        2. Goal Board
+    :param target_val: int to search for in the current and goal boards
+    :param current_board: 2d list of ints containing the current board
+    :param goal_board: 2d list of ints containing the goal board
+    :return: tuple containing 2 ints
+    """
+    current_board_coords = (-1, -1)
+    goal_board_coords = (-1, -1)
+
+    # find current board coordinates for the target value
+    for row_idx, row in enumerate(current_board):
+        for col_idx, element in enumerate(row):
+            if element == target_val:
+                current_board_coords = (row_idx, col_idx)
+            else:
+                print('ERROR (coordinate_finder): target not found in '
+                      'current board')
+
+    # find goal board coordinates for the target value
+    for row_idx, row in enumerate(goal_board):
+        for col_idx, element in enumerate(row):
+            if element == target_val:
+                goal_board_coords = (row_idx, col_idx)
+            else:
+                print('ERROR (coordinate_finder): target not found in '
+                      'goal board')
+
+    return current_board_coords, goal_board_coords
+
 
 def matrix_printer(matrix, start_index=0, shortest_path=False):
     """
@@ -294,9 +327,10 @@ def matrix_printer(matrix, start_index=0, shortest_path=False):
 
 
 def main():
+
     # 3 Puzzle Driver
-    # start_state = [[3, 1], [0, 2]]
-    # goal_state = [[1, 2], [3, 0]]
+    start_state = [[3, 1], [0, 2]]
+    goal_state = [[1, 2], [3, 0]]
 
     # 8 Puzzle Driver
     # start_state = [[4, 1, 3], [2, 0, 6], [7, 5, 8]]
@@ -304,15 +338,18 @@ def main():
     # goal_state = [[1, 2, 3], [4, 5, 6], [7, 8, 0]]  # my assumed goal
 
     # 15 Puzzle Driver
-    start_state = [[2, 3, 7, 4],
-                   [1, 6, 8, 12],
-                   [5, 9, 11, 15],
-                   [13, 10, 0, 14]]
+    # start_state = [[2, 3, 7, 4],
+    #                [1, 6, 8, 12],
+    #                [5, 9, 11, 15],
+    #                [13, 10, 0, 14]]
+    #
+    # goal_state = [[1, 2, 3, 4],
+    #               [5, 6, 7, 8],
+    #               [9, 10, 11, 12],
+    #               [13, 14, 15, 0]]
 
-    goal_state = [[1, 2, 3, 4],
-                  [5, 6, 7, 8],
-                  [9, 10, 11, 12],
-                  [13, 14, 15, 0]]
+    # test euclidean dist funct
+    euclidean_distance(start_state, goal_state)
 
     # Measure performance in seconds
     tic = time.perf_counter()
