@@ -218,28 +218,38 @@ def bfs_shortest_paths(start_board, goal_board):
                 current_board = path[1]
             bfs_nodes_visited += 1
 
-            print(f'**Current Board at Level: {bfs_level}**')
-            matrix_printer([current_board])
-
+            print(f'**Current Boards at Level: {bfs_level}**')
+            for level_boards in open_boards:
+                matrix_printer([level_boards])
 
             # generate the children of the vertex.
+            if (bool(open_boards) == False):
+                open_boards.append(current_board)
             explored_boards.append(current_board)
-            child_boards = get_child_boards_list(current_board)
-            bfs_level += 1
-            num_unique_children = 0
 
-            # check for duplicates, only add uniques to open board
-            for child in child_boards:
-                if ((child not in queue) and
-                        (child not in explored_boards)):
-                    open_boards.append(child)
-                    num_unique_children += 1
-            # check to see if any children are the goal
-            for children in open_boards:
-                if children == goal_board:
-                    return path + [children], bfs_nodes_visited
+            num_unique_children = 0
+            unique_children = []
+            bfs_level += 1
+
+            for nodes in open_boards:
+                child_boards = get_child_boards_list(nodes)
+                # check for duplicates, only add uniques to open board
+                for child in child_boards:
+                    if ((child not in open_boards) and
+                            (child not in explored_boards)):
+                        unique_children.append(child)
+                        num_unique_children += 1
+
+            for uniques in unique_children:
+                open_boards.append(uniques)
+
+            # check to see if any boards are the goal
+            for board in open_boards:
+                if board == goal_board:
+                    return path + [board], bfs_nodes_visited
             # add path + open boards (children) to queue
-            queue.append(path + open_boards)
+            queue.append(path + unique_children)
+            open_boards.pop(0)
 
     return shortest_path, bfs_nodes_visited  # No shortest path found
 
@@ -270,7 +280,7 @@ def matrix_printer(matrix, start_index=0, shortest_path=False):
 def main():
 
     # 3 Puzzle Driver
-    start_state = [[1, 0], [3, 2]]
+    start_state = [[0, 1], [3, 2]]
     goal_state = [[1, 2], [3, 0]]
 
     # 8 Puzzle Driver
