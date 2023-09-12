@@ -223,8 +223,7 @@ def bfs_shortest_paths(start_board, goal_board):
 
             # 1. Check to see if the vertex is your goal state
             if (current_board == goal_board):
-                shortest_path = current_board
-
+                shortest_path = path
             else:
                 # generate the children of the vertex.
                 explored_boards.append(current_board)
