@@ -221,30 +221,30 @@ def bfs_shortest_paths(start_board, goal_board):
             print(f'**Current Board at Level: {bfs_level}**')
             matrix_printer([current_board])
 
-            # 1. Check to see if the vertex is your goal state
-            if (current_board == goal_board):
-                shortest_path = path
-            else:
-                # generate the children of the vertex.
-                explored_boards.append(current_board)
-                child_boards = get_child_boards_list(current_board)
-                bfs_level += 1
-                num_unique_children = 0
 
-                # check for duplicates, only add uniques to open board
-                for child in child_boards:
-                    if ((child not in queue) and
-                            (child not in explored_boards)):
-                        open_boards.append(child)
-                        num_unique_children += 1
+            # generate the children of the vertex.
+            explored_boards.append(current_board)
+            child_boards = get_child_boards_list(current_board)
+            bfs_level += 1
+            num_unique_children = 0
 
-                # add path + open boards (children) to queue
-                queue.append(path + open_boards)
+            # check for duplicates, only add uniques to open board
+            for child in child_boards:
+                if ((child not in queue) and
+                        (child not in explored_boards)):
+                    open_boards.append(child)
+                    num_unique_children += 1
+            # check to see if any children are the goal
+            for children in open_boards:
+                if children == goal_board:
+                    return path + [children], bfs_nodes_visited
+            # add path + open boards (children) to queue
+            queue.append(path + open_boards)
 
     return shortest_path, bfs_nodes_visited  # No shortest path found
 
 
-def matrix_printer(matrix, start_index=0, shortest_path = False):
+def matrix_printer(matrix, start_index=0, shortest_path=False):
     """
     BUG IN HERE RE SHORTEST PATH PRINT
     :param matrix:
@@ -253,14 +253,18 @@ def matrix_printer(matrix, start_index=0, shortest_path = False):
     :return:
     """
     index = 0
-
+    col_count = 0
     for boards in matrix:
+        col_count = 0
         if (index >= start_index):
             for item in boards:
+                col_count += 1
                 print(item)
-            print(10 * '-')
             if(shortest_path):
-                print('V')
+                print((col_count // 2) * ' ' + '| |')
+                print((col_count // 2) * ' ' + ' V')
+            else:
+                print(10 * '-')
         index += 1
 
 def main():
