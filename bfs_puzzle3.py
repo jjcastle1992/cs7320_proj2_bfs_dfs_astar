@@ -98,14 +98,21 @@ def get_child_boards_list(board):
     zero_position = [-1, -1]
     row_pos = -1  # to determine which
 
+    total_board_rows = 0
+    total_board_cols = 0
+
     for rows in board:
         row_pos += 1
         col_pos = -1
+        total_board_rows += 1
+        col_count = 0
         for columns in rows:
             col_pos += 1
+            col_count += 1
+            if (col_count > total_board_cols):
+                total_board_cols = col_count
             if columns == 0:
                 zero_position = [row_pos, col_pos]
-                break
 
     # determine if we can move up (Zero not in bottom Row)
     # print(f'This Level Start Board: {board}')
@@ -194,6 +201,7 @@ def bfs_shortest_paths(start_board, goal_board):
     bfs_nodes_visited = 0  # to track number nodes visited
     explored_boards = []  # note: should explore other ds for find speed
     open_boards = []
+    shortest_path = None
 
     # Verify legality of start board
     legal_board = legal_board_check(start_board)
@@ -204,9 +212,11 @@ def bfs_shortest_paths(start_board, goal_board):
 
         while queue:
             path = queue.pop(0)
-            current_board = path[-1]
+            if (len(path) < 2):
+                current_board = path[-1]
+            else:
+                current_board = path[1]
             bfs_nodes_visited += 1
-            shortest_path = None
 
             print(f'**Current Board at Level: {bfs_level}**')
             matrix_printer([current_board])
@@ -222,7 +232,7 @@ def bfs_shortest_paths(start_board, goal_board):
                 bfs_level += 1
                 num_unique_children = 0
 
-                # check for duplicates, only add uniques to the open board
+                # check for duplicates, only add uniques to open board
                 for child in child_boards:
                     if ((child not in queue) and
                             (child not in explored_boards)):
@@ -232,7 +242,7 @@ def bfs_shortest_paths(start_board, goal_board):
                 # add path + open boards (children) to queue
                 queue.append(path + open_boards)
 
-    return shortest_path, bfs_nodes_visited  # No shortest path was found
+    return shortest_path, bfs_nodes_visited  # No shortest path found
 
 
 def matrix_printer(matrix, start_index=0, shortest_path = False):
@@ -265,7 +275,8 @@ def main():
     # start_state = [[1, 2, 3], [4, 0, 6], [7, 5, 8]]
     # goal_state = [[1, 2, 3], [4, 5, 6], [7, 8, 0]]  # my assumed goal
 
-    shortest_path, bfs_nodes_visited = bfs_shortest_paths(start_state, goal_state)
+    shortest_path, bfs_nodes_visited = bfs_shortest_paths(start_state,
+                                                          goal_state)
     print(f'Total Nodes Explored: {bfs_nodes_visited}')
     if (shortest_path != None):
         print(f'Shortest Path')
