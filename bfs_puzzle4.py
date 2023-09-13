@@ -222,15 +222,15 @@ def bfs2_euclidean(start_board, goal_board):
             next_node_list = [x for x in child_boards[str(vertex)]
                               if str(x) not in set(str(path))]
 
-            # UPDATE SO NEXT_NODE_LIST IS PRIORITY QUEUE
-            # (use next_node_list_euclid)
+            # Create Euclidean Distance Priority Queue
             for node in next_node_list:
                 euclidean_sum = euclidean_distance(node, goal_board)
                 next_node_list_euclid.put((euclidean_sum, node))
 
+            # Check for victory conditions, and add to our path
             while not (next_node_list_euclid.empty()):
                 priority, next_node = next_node_list_euclid.get()
-                # print(next_node)
+
                 if next_node == goal_board:
                     return [path + [next_node]]
                 else:
@@ -238,6 +238,52 @@ def bfs2_euclidean(start_board, goal_board):
 
     return None  # if no path is found
 
+
+def bfs2_manhattan(start_board, goal_board):
+    """
+    This function searches for the shortest path to a game state board
+    if one exists using Manhattan distance heuristics
+    :param start_board: 2d list of ints containing starting game board
+    :param goal_board: 2d list of ints containing goal state game board
+    :return: 2d list of ints containing the shortest path if one
+    exists. If there is no path to the goal state, None is returned.
+    Also returns an int count of the number of nodes visited.
+    """
+    global bfs_nodes_visited  # to track number nodes visited
+    bfs_nodes_visited = 0
+    next_node_list_manhat = PriorityQueue()
+    # Verify legality of start board
+    legal_board = legal_board_check(start_board)
+
+    if (legal_board):
+        queue = [[start_board]]
+
+        while queue:
+            path = queue.pop(0)
+            vertex = path[len(path) - 1]
+            print(f'**Current Board #{bfs_nodes_visited}**')
+            matrix_printer([vertex])
+            bfs_nodes_visited += 1
+            child_boards = get_child_boards_list(vertex)
+            next_node_list = [x for x in child_boards[str(vertex)]
+                              if str(x) not in set(str(path))]
+
+            # Create Manhattan Distance Priority Queue
+            for node in next_node_list:
+                # Replace with Manhattan Distance method
+                # manhattan_sum = euclidean_distance(node, goal_board)
+                next_node_list_manhat.put((manhattan_sum, node))
+
+            # Check for victory conditions, and add to our path
+            while not (next_node_list_manhat.empty()):
+                priority, next_node = next_node_list_manhat.get()
+
+                if next_node == goal_board:
+                    return [path + [next_node]]
+                else:
+                    queue.append(path + [next_node])
+
+    return None  # if no path is found
 
 def euclidean_distance(board, goal):
     """
@@ -257,7 +303,8 @@ def euclidean_distance(board, goal):
     for row_idx, row in enumerate(goal):
         for col_idx, element in enumerate(row):
             current_target = goal[row_idx][col_idx]
-            board_coord, goal_coord = coordinate_finder(current_target, board, goal)
+            board_coord, goal_coord = coordinate_finder(current_target,
+                                                        board, goal)
             x1, y1 = board_coord
             x2, y2 = goal_coord
             euclidean_dist = (((x2 - x1) ** 2)+((y2 - y1) ** 2)) ** 0.5
@@ -265,6 +312,8 @@ def euclidean_distance(board, goal):
 
     return euclidean_sum
 
+def manhattan_distance():
+    pass
 
 def coordinate_finder(target_val, current_board, goal_board):
     """
@@ -333,36 +382,36 @@ def main():
     # goal_state = [[1, 2], [3, 0]]
 
     # 8 Puzzle Driver
-    start_state = [[4, 1, 3], [2, 0, 6], [7, 5, 8]]
+    # start_state = [[4, 1, 3], [2, 0, 6], [7, 5, 8]]
     # start_state = [[1, 2, 3], [4, 0, 6], [7, 5, 8]]
-    goal_state = [[1, 2, 3], [4, 5, 6], [7, 8, 0]]  # my assumed goal
+    # goal_state = [[1, 2, 3], [4, 5, 6], [7, 8, 0]]  # my assumed goal
 
     # 15 Puzzle Driver
-    # start_state = [[2, 3, 7, 4],
-    #                [1, 6, 8, 12],
-    #                [5, 9, 11, 15],
-    #                [13, 10, 0, 14]]
-    #
-    # goal_state = [[1, 2, 3, 4],
-    #               [5, 6, 7, 8],
-    #               [9, 10, 11, 12],
-    #               [13, 14, 15, 0]]
+    start_state = [[2, 3, 7, 4],
+                   [1, 6, 8, 12],
+                   [5, 9, 11, 15],
+                   [13, 10, 0, 14]]
+
+    goal_state = [[1, 2, 3, 4],
+                  [5, 6, 7, 8],
+                  [9, 10, 11, 12],
+                  [13, 14, 15, 0]]
 
     # test euclidean dist funct
     # euclidean_distance(start_state, goal_state)
 
     # Measure performance in seconds
-    tic = time.perf_counter()
-    shortest_path = bfs_shortest_paths(start_state, goal_state)
-    toc = time.perf_counter()
-    print('------------BRUTE FORCE BFS------------')
-    print(f'Total Nodes Explored: {bfs_nodes_visited}')
-    print(f'Time to completion: {toc - tic:0.04f} seconds')
-    if (shortest_path != None):
-        print(f'Shortest Path')
-        matrix_printer(shortest_path, 0, True)
-    else:
-        print('Shortest path not found')
+    # tic = time.perf_counter()
+    # shortest_path = bfs_shortest_paths(start_state, goal_state)
+    # toc = time.perf_counter()
+    # print('------------BRUTE FORCE BFS------------')
+    # print(f'Total Nodes Explored: {bfs_nodes_visited}')
+    # print(f'Time to completion: {toc - tic:0.04f} seconds')
+    # if (shortest_path != None):
+    #     print(f'Shortest Path')
+    #     matrix_printer(shortest_path, 0, True)
+    # else:
+    #     print('Shortest path not found')
 
     # Test BFS with Euclidean Distance Heuristic
     tic = time.perf_counter()
