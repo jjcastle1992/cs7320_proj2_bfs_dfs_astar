@@ -7,6 +7,7 @@ import time
 import copy
 from queue import PriorityQueue
 
+
 def legal_board_check(board):
     """
     This function checks to ensure the starting board is legal
@@ -53,6 +54,7 @@ def legal_board_check(board):
         print('ERROR: There is more than one zero on the board')
         print(f'Number Zeroes: {zero_count}')
 
+    # Validate all conditions for a legal board are met
     if ((square_matrix) and (list_ints) and (single_zero)):
         legal_board = True
 
@@ -74,6 +76,7 @@ def get_child_boards_list(board):
     total_board_rows = 0
     total_board_cols = 0
 
+    # get our board dimensions AND the zero position
     for rows in board:
         row_pos += 1
         col_pos = -1
@@ -173,9 +176,11 @@ def bfs_shortest_paths(start_board, goal_board):
     # Verify legality of start board
     legal_board = legal_board_check(start_board)
 
+    # check for legal board before kicking off
     if (legal_board):
         queue = [[start_board]]
 
+        # run BFS (Brute force)
         while queue:
             path = queue.pop(0)
             vertex = path[len(path) - 1]
@@ -190,6 +195,7 @@ def bfs_shortest_paths(start_board, goal_board):
                     return [path + [next]]
                 else:
                     queue.append(path + [next])
+
     return None  # if no path is found
 
 
@@ -209,9 +215,11 @@ def bfs2_euclidean(start_board, goal_board):
     # Verify legality of start board
     legal_board = legal_board_check(start_board)
 
+    # Check for legal board before kicking off
     if (legal_board):
         queue = [[start_board]]
 
+        # Kick off BFS (Euclidean)
         while queue:
             path = queue.pop(0)
             vertex = path[len(path) - 1]
@@ -255,9 +263,11 @@ def bfs2_manhattan(start_board, goal_board):
     # Verify legality of start board
     legal_board = legal_board_check(start_board)
 
+    # Check for legal board before kicking off
     if (legal_board):
         queue = [[start_board]]
 
+        # Kick off BFS (Manhattan)
         while queue:
             path = queue.pop(0)
             vertex = path[len(path) - 1]
@@ -298,8 +308,8 @@ def euclidean_distance(board, goal):
     """
     euclidean_sum = 0.0
     # customizing in-case goal board is not 1, 2, 3, 4...etc.
-    current_target = None
 
+    # Calculate our Euclidean Sum
     for row_idx, row in enumerate(goal):
         for col_idx, element in enumerate(row):
             current_target = goal[row_idx][col_idx]
@@ -326,8 +336,8 @@ def manhattan_distance(board, goal):
     """
     manhattan_sum = 0.0
     # customizing in-case goal board is not 1, 2, 3, 4...etc.
-    current_target = None
 
+    # Calculate our Manhattan Sum
     for row_idx, row in enumerate(goal):
         for col_idx, element in enumerate(row):
             current_target = goal[row_idx][col_idx]
@@ -379,6 +389,8 @@ def matrix_printer(matrix, start_index=0, shortest_path=False):
     :return: void function so no return
     """
     index = 0
+
+    # Check to see if we're printing shortest path board (for format)
     if(shortest_path):
         for boards in matrix:
             for sub_board in boards:
@@ -408,20 +420,20 @@ def main():
     # goal_state = [[1, 2], [3, 0]]
 
     # 8 Puzzle Driver
-    start_state = [[4, 1, 3], [2, 0, 6], [7, 5, 8]]
+    # start_state = [[4, 1, 3], [2, 0, 6], [7, 5, 8]]
     # start_state = [[1, 2, 3], [4, 0, 6], [7, 5, 8]]
-    goal_state = [[1, 2, 3], [4, 5, 6], [7, 8, 0]]  # my assumed goal
+    # goal_state = [[1, 2, 3], [4, 5, 6], [7, 8, 0]]
 
     # 15 Puzzle Driver
-    # start_state = [[2, 3, 7, 4],
-    #                [1, 6, 8, 12],
-    #                [5, 9, 11, 15],
-    #                [13, 10, 0, 14]]
-    #
-    # goal_state = [[1, 2, 3, 4],
-    #               [5, 6, 7, 8],
-    #               [9, 10, 11, 12],
-    #               [13, 14, 15, 0]]
+    start_state = [[2, 3, 7, 4],
+                   [1, 6, 8, 12],
+                   [5, 9, 11, 15],
+                   [13, 10, 0, 14]]
+
+    goal_state = [[1, 2, 3, 4],
+                  [5, 6, 7, 8],
+                  [9, 10, 11, 12],
+                  [13, 14, 15, 0]]
 
     # test euclidean dist funct
     # euclidean_distance(start_state, goal_state)
