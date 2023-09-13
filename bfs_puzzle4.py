@@ -408,36 +408,36 @@ def main():
     # goal_state = [[1, 2], [3, 0]]
 
     # 8 Puzzle Driver
-    # start_state = [[4, 1, 3], [2, 0, 6], [7, 5, 8]]
+    start_state = [[4, 1, 3], [2, 0, 6], [7, 5, 8]]
     # start_state = [[1, 2, 3], [4, 0, 6], [7, 5, 8]]
-    # goal_state = [[1, 2, 3], [4, 5, 6], [7, 8, 0]]  # my assumed goal
+    goal_state = [[1, 2, 3], [4, 5, 6], [7, 8, 0]]  # my assumed goal
 
     # 15 Puzzle Driver
-    start_state = [[2, 3, 7, 4],
-                   [1, 6, 8, 12],
-                   [5, 9, 11, 15],
-                   [13, 10, 0, 14]]
-
-    goal_state = [[1, 2, 3, 4],
-                  [5, 6, 7, 8],
-                  [9, 10, 11, 12],
-                  [13, 14, 15, 0]]
+    # start_state = [[2, 3, 7, 4],
+    #                [1, 6, 8, 12],
+    #                [5, 9, 11, 15],
+    #                [13, 10, 0, 14]]
+    #
+    # goal_state = [[1, 2, 3, 4],
+    #               [5, 6, 7, 8],
+    #               [9, 10, 11, 12],
+    #               [13, 14, 15, 0]]
 
     # test euclidean dist funct
     # euclidean_distance(start_state, goal_state)
 
     # Measure performance in seconds
-    # tic = time.perf_counter()
-    # shortest_path = bfs_shortest_paths(start_state, goal_state)
-    # toc = time.perf_counter()
-    # print('------------BRUTE FORCE BFS------------')
-    # print(f'Total Nodes Explored: {bfs_nodes_visited}')
-    # print(f'Time to completion: {toc - tic:0.04f} seconds')
-    # if (shortest_path != None):
-    #     print(f'Shortest Path')
-    #     matrix_printer(shortest_path, 0, True)
-    # else:
-    #     print('Shortest path not found')
+    tic = time.perf_counter()
+    shortest_path = bfs_shortest_paths(start_state, goal_state)
+    toc = time.perf_counter()
+    print('------------BRUTE FORCE BFS------------')
+    print(f'Total Nodes Explored: {bfs_nodes_visited}')
+    print(f'Time to completion: {toc - tic:0.04f} seconds')
+    if (shortest_path != None):
+        print(f'Shortest Path')
+        matrix_printer(shortest_path, 0, True)
+    else:
+        print('Shortest path not found')
 
     # Test BFS with Euclidean Distance Heuristic
     tic = time.perf_counter()
@@ -451,5 +451,21 @@ def main():
         matrix_printer(shortest_path_euclidean, 0, True)
     else:
         print('Shortest path not found')
+
+
+    # Test BFS with Manhattan Distance Heuristic
+    tic = time.perf_counter()
+    shortest_path_manhattan = bfs2_manhattan(start_state,
+                                             goal_state)
+    toc = time.perf_counter()
+    print('------------Manhattan BFS------------')
+    print(f'Total Nodes Explored: {bfs_nodes_visited}')
+    print(f'Time to completion: {toc - tic:0.04f} seconds')
+    if (shortest_path_manhattan != None):
+        print(f'Shortest Path')
+        matrix_printer(shortest_path_manhattan, 0, True)
+    else:
+        print('Shortest path not found')
+
 
 main()
