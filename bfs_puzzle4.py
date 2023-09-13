@@ -270,8 +270,7 @@ def bfs2_manhattan(start_board, goal_board):
 
             # Create Manhattan Distance Priority Queue
             for node in next_node_list:
-                # Replace with Manhattan Distance method
-                # manhattan_sum = euclidean_distance(node, goal_board)
+                manhattan_sum = manhattan_distance(node, goal_board)
                 next_node_list_manhat.put((manhattan_sum, node))
 
             # Check for victory conditions, and add to our path
@@ -284,6 +283,7 @@ def bfs2_manhattan(start_board, goal_board):
                     queue.append(path + [next_node])
 
     return None  # if no path is found
+
 
 def euclidean_distance(board, goal):
     """
@@ -312,8 +312,34 @@ def euclidean_distance(board, goal):
 
     return euclidean_sum
 
-def manhattan_distance():
-    pass
+
+def manhattan_distance(board, goal):
+    """
+    This function calculates the Manhattan Sum for a given board based
+    on the variance in tile distance of the current board vs the goal
+    board.
+    :param board: 2d list of ints containing the board to give a
+    Manhattan sum.
+    :param goal: 2d list of ints containing goal state game board
+    :return: float that is the sum of all Manhattan distances for the
+    target board vs goal board
+    """
+    manhattan_sum = 0.0
+    # customizing in-case goal board is not 1, 2, 3, 4...etc.
+    current_target = None
+
+    for row_idx, row in enumerate(goal):
+        for col_idx, element in enumerate(row):
+            current_target = goal[row_idx][col_idx]
+            board_coord, goal_coord = coordinate_finder(current_target,
+                                                        board, goal)
+            x1, y1 = board_coord
+            x2, y2 = goal_coord
+            manhattan_dist = (abs(x1 - x2) + abs(y1 - y2))
+            manhattan_sum += manhattan_dist
+
+    return manhattan_sum
+
 
 def coordinate_finder(target_val, current_board, goal_board):
     """
