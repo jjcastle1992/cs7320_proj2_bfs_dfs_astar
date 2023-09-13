@@ -224,12 +224,18 @@ def bfs2_euclidean(start_board, goal_board):
 
             # UPDATE SO NEXT_NODE_LIST IS PRIORITY QUEUE
             # (use next_node_list_euclid)
+            for node in next_node_list:
+                euclidean_sum = euclidean_distance(node, goal_board)
+                next_node_list_euclid.put((euclidean_sum, node))
 
-            for next in next_node_list:
-                if next == goal_board:
-                    return [path + [next]]
+            while not (next_node_list_euclid.empty()):
+                priority, next_node = next_node_list_euclid.get()
+                # print(next_node)
+                if next_node == goal_board:
+                    return [path + [next_node]]
                 else:
-                    queue.append(path + [next])
+                    queue.append(path + [next_node])
+
     return None  # if no path is found
 
 
@@ -278,18 +284,12 @@ def coordinate_finder(target_val, current_board, goal_board):
         for col_idx, element in enumerate(row):
             if element == target_val:
                 current_board_coords = (row_idx, col_idx)
-            else:
-                print('ERROR (coordinate_finder): target not found in '
-                      'current board')
 
     # find goal board coordinates for the target value
     for row_idx, row in enumerate(goal_board):
         for col_idx, element in enumerate(row):
             if element == target_val:
                 goal_board_coords = (row_idx, col_idx)
-            else:
-                print('ERROR (coordinate_finder): target not found in '
-                      'goal board')
 
     return current_board_coords, goal_board_coords
 
@@ -329,13 +329,13 @@ def matrix_printer(matrix, start_index=0, shortest_path=False):
 def main():
 
     # 3 Puzzle Driver
-    start_state = [[3, 1], [0, 2]]
-    goal_state = [[1, 2], [3, 0]]
+    # start_state = [[3, 1], [0, 2]]
+    # goal_state = [[1, 2], [3, 0]]
 
     # 8 Puzzle Driver
-    # start_state = [[4, 1, 3], [2, 0, 6], [7, 5, 8]]
+    start_state = [[4, 1, 3], [2, 0, 6], [7, 5, 8]]
     # start_state = [[1, 2, 3], [4, 0, 6], [7, 5, 8]]
-    # goal_state = [[1, 2, 3], [4, 5, 6], [7, 8, 0]]  # my assumed goal
+    goal_state = [[1, 2, 3], [4, 5, 6], [7, 8, 0]]  # my assumed goal
 
     # 15 Puzzle Driver
     # start_state = [[2, 3, 7, 4],
@@ -349,13 +349,13 @@ def main():
     #               [13, 14, 15, 0]]
 
     # test euclidean dist funct
-    euclidean_distance(start_state, goal_state)
+    # euclidean_distance(start_state, goal_state)
 
     # Measure performance in seconds
     tic = time.perf_counter()
     shortest_path = bfs_shortest_paths(start_state, goal_state)
     toc = time.perf_counter()
-
+    print('------------BRUTE FORCE BFS------------')
     print(f'Total Nodes Explored: {bfs_nodes_visited}')
     print(f'Time to completion: {toc - tic:0.04f} seconds')
     if (shortest_path != None):
@@ -364,5 +364,17 @@ def main():
     else:
         print('Shortest path not found')
 
+    # Test BFS with Euclidean Distance Heuristic
+    tic = time.perf_counter()
+    shortest_path_euclidean = bfs2_euclidean(start_state, goal_state)
+    toc = time.perf_counter()
+    print('------------Euclidean BFS------------')
+    print(f'Total Nodes Explored: {bfs_nodes_visited}')
+    print(f'Time to completion: {toc - tic:0.04f} seconds')
+    if (shortest_path_euclidean != None):
+        print(f'Shortest Path')
+        matrix_printer(shortest_path_euclidean, 0, True)
+    else:
+        print('Shortest path not found')
 
 main()
